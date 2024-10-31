@@ -20,10 +20,26 @@ model Product {
   desc String
   image String
   category String
+
+  cartItems CartProduct[]
 }
 
 model Cart {
-  id Int @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
+  status     String   @default("Pending")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  cartItems  CartProduct[]
+}
+
+model CartProduct {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
   productId Int
 
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])
 }
